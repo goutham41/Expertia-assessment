@@ -1,5 +1,11 @@
 const companies = require("../models/companies");
-
+ var totalCount = 0;
+ companies.find().exec((err, succ) => {
+   if (succ) {
+     totalCount = succ.length;
+   }
+ });
+ 
 module.exports.Createcompanies = (req, res) => {
   const company = new companies(req.body);
   company.save((err, succ) => {
@@ -36,7 +42,9 @@ module.exports.Getcompanies = (req, res) => {
             message: "data not present keep different page number",
           });
         } else {
-          return res.status(201).send({ succ, status: true,count:succ.length });
+          return res
+            .status(201)
+            .send({ succ, status: true, count: totalCount });
         }
       }
     });
