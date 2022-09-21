@@ -1,16 +1,12 @@
 import React from "react";
 import axios from "axios";
 import { UserSignUp } from "../utils/APIRoutes";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Signup = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const Value = new FormData(event.currentTarget);
-    console.log({
-      email: Value.get("email"),
-      password: Value.get("password"),
-      username: Value.get("name"),
-      gender: Value.get("gender"),
-    });
     axios
       .post(UserSignUp, {
         email: Value.get("email"),
@@ -19,10 +15,12 @@ const Signup = () => {
         gender: Value.get("gender"),
       })
       .then((res) => {
-        console.log(res);
+         const notify = () => toast("Successfully created account");
+         notify();
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((err) => {;
+        const notify = () => toast("some thing went wrong try again");
+        notify();
       });
   };
   return (

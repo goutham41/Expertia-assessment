@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import { GetCompanies, host } from "../utils/APIRoutes";
+import { AuthContext } from "../components/Auth";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Home = () => {
+   let navigate = useNavigate();
+  const { UserData, setUserData } = useContext(AuthContext);
   const [page, setPage] = useState(0);
   const [companies, setCompanies] = useState([]);
   const [maxPage, setMaxPage] = useState(0);
@@ -12,7 +18,6 @@ const Home = () => {
       .get(`${host}/companies?page=${page}&limit=3`)
       .then((res) => {
         setMaxPage(Math.ceil(res.data.count / 3));
-        console.log(res.data.succ);
         setCompanies(res.data.succ);
       })
       .catch((err) => {
@@ -60,15 +65,15 @@ const Home = () => {
       </div>
 
       <div style={{ width: "72%", margin: "auto" }}>
-        {companies.map((elem) => {
+        {companies.map((elem,i) => {
           return (
             <>
               <div
-                class="card border-dark mb-3"
+                className="card border-dark mb-3"
                 style={{ Width: "19rem", height: "auto" }}
                 key={elem._id}
               >
-                <div className="card-header">
+                <div className="card-header" key={i}>
                   COMPANY NAME : {elem.company_name.toUpperCase()}
                 </div>
                 <div style={{ width: "100%", display: "flex" }}>
@@ -115,7 +120,7 @@ const Home = () => {
                       })}
                       <span className="card-text">DESCRIPTION :</span>
                       <br />
-                      <p style={{ marginLeft: "70px" }}>{elem.description}</p>
+                      <p style={{ marginLeft: "70px",textAlign:"justify" }}>{elem.description}</p>
                       <span className="card-text">
                         {elem.additional_information
                           ? "ADDITIONAL INFORMATION :"
@@ -143,7 +148,33 @@ const Home = () => {
                       }}
                     />
                     <br />
-                    <button type="button" class="btn btn-primary">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => {
+                        if (UserData.isLogin) {
+                          axios
+                            .post(`${host}/applied`, {
+                              company: { ...elem },
+                              user_id: UserData.succ._id,
+                              status: true,
+                              company_id: elem._id,
+                            })
+                            .then((res) => {
+                               const notify = () => toast(res.data.message);
+                               notify();
+                            })
+                            .catch((err) => {
+                               const notify = () => toast("error try after some time");
+                               notify();
+                            });
+                        } else {
+                           const notify = () => toast("Login and apply");
+                           notify();
+                          navigate("/login")
+                        }
+                      }}
+                    >
                       APPLY
                     </button>
                   </div>

@@ -4,6 +4,8 @@ import logo from "./logo.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./Auth";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Header = () => {
   let navigate = useNavigate();
 
@@ -60,6 +62,8 @@ const Header = () => {
               className="courses1"
               onClick={() => {
                 setUserData({ isLogin: false });
+                 const notify = () => toast("Successfully logout");
+                 notify();
                 navigate("/login");
               }}
             >
@@ -68,6 +72,18 @@ const Header = () => {
           )}
         </div>
       </div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   );
 };

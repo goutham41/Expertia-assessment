@@ -3,9 +3,12 @@ import axios from "axios";
 import { UserLogin } from "../utils/APIRoutes";
 import { AuthContext } from "../components/Auth";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
-    let navigate = useNavigate();
-   const { UserData, setUserData } = useContext(AuthContext);
+  let navigate = useNavigate();
+
+  const { UserData, setUserData } = useContext(AuthContext);
   const handleSubmit = (event) => {
     event.preventDefault();
     const Value = new FormData(event.currentTarget);
@@ -15,13 +18,15 @@ const Login = () => {
         password: Value.get("password"),
       })
       .then((res) => {
-        console.log(res.data);
-        setUserData({isLogin:true,...res.data})
-       navigate("/home");
+        const notify = () => toast("Successfully login");
+        notify();
+        setUserData({ isLogin: true, ...res.data });
+        navigate("/home");
       })
       .catch((err) => {
-        console.log(err);
-        setUserData({ isLogin: false});
+         const notify = () => toast("Enter correct password or create an account");
+         notify();
+        setUserData({ isLogin: false });
       });
   };
   return (

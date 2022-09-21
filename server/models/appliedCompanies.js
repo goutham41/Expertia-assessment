@@ -2,10 +2,10 @@ const { Schema, model } = require("mongoose");
 
 const AppliedCompaniesSchema = new Schema(
   {
-    company_id: String,
-    user_name: String,
+    company:{type:Object,default:{}},
     status: Boolean,
     user_id: String,
+    company_id:String
   },
   {
     timestamps: {
